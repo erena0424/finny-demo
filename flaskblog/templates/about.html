@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section">
+        <div class="d-flex flex-column">
+        <div class="container row">
+            <hr style="border-top: 3px #ACACAC solid" class="col-sm"></hr>
+            <h1 class="col-sm d-flex align-items-center justify-content-center">Finnyとは</h1>
+            <hr style="border-top: 3px #ACACAC solid" class="col-sm"></hr>        
+        </div>
+        <div style="width: 100%; height: 100%"><span style="color: black; font-size: 16px; font-family: BIZ UDPGothic; font-weight: 400; letter-spacing: 1.44px; word-wrap: break-word">Finny</span><span style="color: black; font-size: 16px; font-family: Noto Sans JP; font-weight: 400; letter-spacing: 1.44px; word-wrap: break-word">はあなたの「学びたい！」という気持ちに寄り添うため、
+            <br/>役立つツール・ユーザーの声をまとめた総合情報サイトです。
+            <br/>
+            <br/>自分にあったサービスで
+            <br/>効率的かつ効果的な学習ができるように、
+            <br/>Finnyがあなたの道しるべとなります。
+            </span>
+        </div>
+        <div style="border-radius: 6.25rem; background: #7FC4C1;" class="btn btn-info d-flex p-2 justify-content-center my-5" ><div style="color: #FFF;text-align: center; font-family: Noto Sans JP;font-size: 1.875rem;font-style: normal;font-weight: 700;">社会的背景</div></div>
+        <div style="width: 100%; height: 100%"><span style="color: black; font-size: 16px; font-family: Noto Sans JP; font-weight: 400; letter-spacing: 1.44px; word-wrap: break-word">学習アプリ・サービスのあまりの数の多さに
+            <br/>かえってやる気を失ってしまったり、
+            <br/>欲しいサービスをを探すのに苦戦したりしないように。
+            <br/>
+            <br/>総務省の調査によると、インターネット全体の情報量は、
+            <br/>2002年から2020年にかけて約6000倍も増加しました。
+            <br/>
+            <br/>もちろん、インターネットの情報量が増加することや、
+            <br/>それに伴ってインターネット上のサービスが増加することは、
+            <br/>私たちの暮らしを豊かにするのに役立つでしょう。
+            <br/>
+            <br/>しかし、この莫大な情報量では、<br/>どれが自分に必要なサービスか、
+            そう簡単には判断しきれません。
+            
+            <br/>
+            <br/>この状況に対処するために、<br/>各分野でさまざまな専門サイトが生まれました。
+            <br/>
+            <br/>レストランでいうなら「食べログ」「Retty」
+            <br/>化粧品でいうなら「＠コスメ」「LIPS」
+            <br/>美容院でいうなら「ホットペッパービューティー」などのことです。
+            <br/>
+            <br/>これらの専門サイトは、<br/>たくさんの消費者から寄せられた、率直な声をまとめることで、
+            <br/>自分にとって「よい」ものがすぐに判断できるようになっています。<br/><br/></span><span style="color: black; font-size: 16px; font-family: BIZ UDPGothic; font-weight: 400; letter-spacing: 1.44px; word-wrap: break-word">Finny</span><span style="color: black; font-size: 16px; font-family: Noto Sans JP; font-weight: 400; letter-spacing: 1.44px; word-wrap: break-word">は、そんな専門サイトの中でも、
+            <br/>とりわけ</span><span style="color: black; font-size: 16px; font-family: Noto Sans JP; font-weight: 700; letter-spacing: 1.44px; word-wrap: break-word">学習サービス</span><span style="color: black; font-size: 16px; font-family: Noto Sans JP; font-weight: 400; letter-spacing: 1.44px; word-wrap: break-word">に特化したサイトになることを目指しています。</span>
+        </div>
+        <div style="border-radius: 6.25rem; background: #7FC4C1;" class="btn btn-info d-flex p-2 justify-content-center my-5" ><div style="color: #FFF;text-align: center; font-family: Noto Sans JP;font-size: 1.875rem;font-style: normal;font-weight: 700;">使いかた</div></div>
+        <div style="width: 100%; height: 100%"><a class="nav-item nav-link" href="{{ url_for('users.register') }}">新規登録</a>より会員登録。すぐ終わります！
+            <br/>２．画面上部の検索バーよりシェアしたいアプリが登録されているか確認。<br/>　　あれば右下の「投稿の全文を見る」から詳細画面に飛び、レビューを投稿してください。<br/>　　なければ画面上部の「新規投稿」よりおススメのアプリをシェアしてみてください。<br/>　　投稿はタイムラインに表示されます。
+            <br/>
+            <br/>その他<br/>・タイムラインにはアプリを使ったおすすめの勉強法、体験談など自由に投稿してもらって大丈夫です！<br/>　素敵なコミュニティの場にしましょう。
+            <br/>・レビューを投稿する際も「タイムラインにも投稿する」にチェックを入れることで<br/>　タイムラインにも投稿されます。</span></div>
+        </div>
+    </div>
+{% endblock content %}

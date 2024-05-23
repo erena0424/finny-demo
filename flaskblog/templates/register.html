@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fildset class="form-group">
+                <div class="container row">
+                    <hr style="border-top: 3px #ACACAC solid" class="col-sm"></hr>
+                    <h1 class="col-sm d-flex align-items-center justify-content-center">新規登録</h1>
+                    <hr style="border-top: 3px #ACACAC solid" class="col-sm"></hr>
+                </div>
+                <div class="form-group">
+                    {{ form.username.label(class="form-control-label") }}<span style="text-align: center; color: white; font-family: BIZ UDPGothic; font-weight: 700; word-wrap: break-word" class="badge badge-secondary badge-danger">必須</span>
+                    {% if form.username.errors %}
+                        {{ form.username(class="form-control form-control-lg is-invalid")}}
+                        <div class="invalid-feedback">
+                            {% for error in form.username.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.username(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.email.label(class="form-control-label") }}<span style="text-align: center; color: white; font-family: BIZ UDPGothic; font-weight: 700; word-wrap: break-word" class="badge badge-secondary badge-danger">必須</span>
+                    {% if form.email.errors %}
+                        {{ form.email(class="form-control form-control-lg is-invalid")}}
+                        <div class="invalid-feedback">
+                            {% for error in form.email.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.email(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.birthdate.label(class="form-control-label") }}<span style="text-align: center; color: white; font-family: BIZ UDPGothic; font-weight: 700; word-wrap: break-word" class="badge badge-secondary badge-danger">必須</span>
+                    {% if form.birthdate.errors %}
+                        {{ form.birthdate(class="form-control form-control-lg is-invalid")}}
+                        <div class="invalid-feedback">
+                            {% for error in form.birthdate.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.birthdate(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.gender.label(class="form-control-label") }}<span style="text-align: center; color: white; font-family: BIZ UDPGothic; font-weight: 700; word-wrap: break-word" class="badge badge-secondary badge-danger">必須</span>
+                    {% if form.gender.errors %}
+                        {{ form.gender(class="form-control form-control-lg is-invalid")}}
+                        <div class="invalid-feedback">
+                            {% for error in form.gender.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.gender(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.password.label(class="form-control-label") }}<span style="text-align: center; color: white; font-family: BIZ UDPGothic; font-weight: 700; word-wrap: break-word" class="badge badge-secondary badge-danger">必須</span>
+                    {% if form.password.errors %}
+                        {{ form.password(class="form-control form-control-lg is-invalid")}}
+                        <div class="invalid-feedback">
+                            {% for error in form.password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.password(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.confirm_password.label(class="form-control-label") }}<span style="text-align: center; color: white; font-family: BIZ UDPGothic; font-weight: 700; word-wrap: break-word" class="badge badge-secondary badge-danger">必須</span>
+                    {% if form.confirm_password.errors %}
+                        {{ form.confirm_password(class="form-control form-control-lg is-invalid")}}
+                        <div class="invalid-feedback">
+                            {% for error in form.confirm_password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.confirm_password(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fildset>
+            <div class="form-group text-center">
+                <div class="mx-auto" style="max-width: 600px;">
+                    {{ form.submit(style="background: rgba(0, 0, 0, 0.40);", class="btn btn-create btn btn-primary btn-block" )}}
+                </div>
+            </div>
+        </form>
+        <small class="text-muted">
+            既に会員登録がお済ですか？ <a style="color: #38908C;" class="ml-2" href="{{ url_for('users.login') }}">ログイン</a>
+        </small>
+    </div>
+    <!-- <div class="d-flex justify-content-end">
+        <small class="text-muted">
+            <a class="ml-2" href="{{ url_for('users.company_register') }}">企業の方はこちら</a>
+        </small>
+    </div> -->
+{% endblock content %}

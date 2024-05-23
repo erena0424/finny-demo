@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block content %}
+    <form method="POST" action="{{url_for('main.search')}}">
+        {{ form.hidden_tag() }}
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search", name="key_words">
+        <div class="form-group">
+            {{ form.categories.label(class="form-control-label") }}
+            {% if form.categories.errors %}
+                {{ form.categories(class="form-control form-control-sm is-invalid", rows=3, multiple=True)}}
+                <div class="invalid-feedback">
+                    {% for error in form.categories.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.categories(class="form-control form-control-lg") }}
+            {% endif %}
+        </div>
+        <button class="btn btn-outline-secondary" type="submit">検索</button>
+        <button class="btn btn-outline-secondary" id="clear-button">クリア</button>
+        <script>
+            document.getElementById('clear-button').addEventListener('click', function() {
+                // Clear the search input field
+                document.querySelector('input[name="key_words"]').value = '';
+                
+                // Reset the selected option in the categories dropdown
+                var categoriesSelect = document.querySelector('select[name="categories"]');
+                categoriesSelect.selectedIndex = -1;
+            });
+        </script>
+    </form>
+    <h2>{{ key_words }}の検索結果</h2>
+    {% for post in posts.items%}
+        <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ url_for('static', filename='post_pics/'+post.image_file) }}">
+            <div class="media-body">
+            <div class="article-metadata">
+                <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
+                <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+            </div>
+            <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
+            <p class="article-content">{{ post.content }}</p>
+            </div>
+        </article>
+    {% endfor %} 
+    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}  
+        {% if page_num %}
+            {% if posts.page == page_num %}
+                <a class="btn btn-info" href="{{ url_for('main.home', page=page_num )}}">{{ page_num }}</a>
+            {% else %}
+                <a class="btn btn-outline-info" href="{{ url_for('main.home', page=page_num )}}">{{ page_num }}</a>
+            {% endif %}
+        {% else %}  
+            ...
+        {% endif %}
+    {% endfor %} 
+{% endblock content %}

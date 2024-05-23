@@ -1,0 +1,149 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section">
+        <div class="container row">
+            <hr style="border-top: 3px #ACACAC solid" class="col-sm"></hr>
+            <h1 class="col-sm d-flex align-items-center justify-content-center">Profile</h1>
+            <hr style="border-top: 3px #ACACAC solid" class="col-sm"></hr>        
+        </div>
+        <div class="media">
+            <img class="rounded-circle account-img" src="{{ image_file }}">
+            <div class="media-body">
+                <h2 class="account-heading">{{ current_user.username }}</h2>
+                <p class="text-secondary">{{ current_user.email }}</p>
+            </div>
+        </div>
+        
+            <form method="POST" action="" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <fildset class="form-group">
+                    <div class="d-flex flex-row">
+                        <h3>
+                            <span style="display: inline-block; border-bottom: 3px #ACACAC solid;">アカウント情報</span>
+                        </h3>
+                        <div class="form-group ms-auto">
+                            {{ form.submit(style="border-radius: 46.50px", class="btn btn-primary" )}}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.username.label(class="form-control-label") }}
+                        {% if form.username.errors %}
+                            {{ form.username(class="form-control form-control-lg is-invalid")}}
+                            <div class="invalid-feedback">
+                                {% for error in form.username.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.username(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.email.label(class="form-control-label") }}
+                        {% if form.email.errors %}
+                            {{ form.email(class="form-control form-control-lg is-invalid")}}
+                            <div class="invalid-feedback">
+                                {% for error in form.email.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.email(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <!-- <div class="form-group">
+                        <div class="d-flex flex-column">
+                            {{ form.picture.label(class="form-control-label") }}
+                            {{ form.picture(class="form-control-label form-control-sm") }}
+                            {% if form.picture.errors %}
+                                {% for error in form.picture.errors %}
+                                        <span class="text-danger">{{ error }}</span></br>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div> -->
+                    
+                    <!-- <h3>
+                        <span style="display: inline-block; border-bottom: 3px #ACACAC solid;">ユーザー情報</span>
+                    </h3>
+                    <p>こちらの情報は変更できません。</p>
+                    <div class="form-group">
+                        <div class="d-flex flex-column">
+                            <div class="form-control-label">生年月日</div>
+                            <div>{{ current_user.birthdate }}</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="d-flex flex-column">
+                            <div class="form-control-label">性別</div>
+                            <div>{{ current_user.gender }}</div>
+                        </div>
+                    </div> -->
+                </fildset>
+            </form>
+        
+    </div>
+    
+    <!-- <h3>
+        <span class="user_posts" style="display: inline-block; border-bottom: 3px #ACACAC solid;"><a  style="color:black" href="{{ url_for('users.user_posts', username=current_user.username) }}">自分の投稿</a></span>
+        <span style="display: inline-block; border-bottom: 3px #ACACAC solid;"><a  style="color:black" href="{{ url_for('users.user_liked_posts', username=current_user.username) }}">お気に入り</a></span>
+    </h3>
+    
+    <h1>あなたへのおすすめ</h1>
+    <div class="jumbotron jumbotron-fluid p-2">
+        <div class="container">
+            {% for post in posts%}
+                <article class="media content-section">
+                    <img class="rounded-circle article-img" src="{{ url_for('static', filename='post_pics/'+post.image_file) }}">
+                    <div class="media-body">
+                    <div class="d-flex flex-column">
+                        <div class="d-flex flex-row">
+                            <a style="font-family: BIZ UDPGothic; font-size: 1.25rem;" class="d-flex justify-content-start mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
+                        </div>
+                        <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d %H:%M') }}</small>
+                    </div>
+                    <hr class="hr hr-blurry" />
+                        <div class="d-flex flex-row">
+                            <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
+                            {% if post.ave_rating %}
+                                <div class="d-flex align-items-center mx-3">
+                                    
+                                        {% for i in range(4) %}
+                                            <i class="fa fa-star rating-color"></i>
+                                        {% endfor %}
+                                        {% for in in range(1) %}
+                                            <i class="fa fa-star"></i>
+                                        {% endfor %}
+                                </div>
+                                <div style="color: #F8DF83; font-size: 30px; font-family: BIZ UDPGothic; font-weight: 400;"  class="d-flex align-items-center"> {{ post.ave_rating }}</div>
+                            {% endif %}
+                        </div>
+                        <p class="article-content">{{ post.content }}</p>
+                        <div class="d-flex">
+                            {% for category in post.categories %}
+                                <p class="article-category">#{{ category.name }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="d-flex flex-row justify-content-end align-items-end">
+                        <div class="d-flex align-items-center mx-1">
+                            {% if current_user.is_authenticated %}
+                                {% if post in current_user.liked_posts %}
+                                    <a href="{{ url_for('posts.like_post', post_id=post.id) }}"><i class="fa-solid fa-heart" style="color: #ffc2fd;"></i></a> 
+                                {% else %}
+                                    <a href="{{ url_for('posts.like_post', post_id=post.id) }}"><i class="fa-regular fa-heart" style="color: #ffc2fd;"></i></a> 
+                                {% endif %}
+                            {% else %}
+                                <a href="{{ url_for('users.login') }}"><i class="fa-regular fa-heart" style="color: #ffc2fd;"></i></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <a style="font-family: BIZ UDPGothic; font-size: 0.9375rem;" class="d-flex justify-content-end text-muted" href="{{ url_for('posts.post', post_id=post.id) }}">投稿の全文を見る</a>
+                </article>
+            {% endfor %}
+        </div>
+    </div> -->
+                
+    
+{% endblock content %}

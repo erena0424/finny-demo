@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+{% block content %}
+    <article class="media content-section d-flex flex-column">
+        <img class="rounded-circle account-img" src="{{ url_for('static', filename='profile_pics/'+review.reviewer.image_file) }}">
+        <div class="media-body">
+            <div class="article-metadata">
+                <a class="mr-2" href="{{ url_for('users.user_reviews', username=review.reviewer.username) }}">{{ review.reviewer.username }}</a>
+                <small class="text-muted">{{ review.date_reviewed.strftime('%Y-%m-%d') }}</small>
+                {% if review.reviewer == current_user %}
+                    <div>
+                        <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('posts.update_review', review_id=review.id) }}">編集</a>
+                        <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('posts.delete_review', review_id=review.id) }}">削除</a>
+                    </div>
+                {% endif %}
+            </div>
+            <h2 class="d-flex flex-row">
+                <a class="article-title mx-1">{{ review.title }}</a>
+                {% if review.rating %}
+                    <div>
+                        {% for i in range(review.rating) %}
+                            <i class="fa fa-star rating-color"></i>
+                        {% endfor %}
+                        {% for in in range(5-review.rating) %}
+                            <i class="fa fa-star"></i>
+                        {% endfor %}
+                    </div>
+                    <p style="color: #F8DF83; font-size: 30px; font-family: BIZ UDPGothic; font-weight: 400;" class="mx-3">{{ review.rating }}</p>
+                {% endif %}
+            </h2>
+            <p class="article-content text-break">{{ review.content }}</p>
+            <div class="d-flex">
+                {% for category in review.categories %}
+                    <p class="article-category">#{{ category.name }}</p>
+                {% endfor %}
+            </div>
+            {% if post_id %}
+                <a class="article-title" href="{{ url_for('posts.post', post_id=review.post_id) }}">元の投稿を見る</a>
+            {% endif %}
+            <div class="d-flex flex-column">
+                {% for comment in comments%}
+                    <div class="d-flex flex-row">
+                        <img class="rounded-circle account-img" src="{{ url_for('static', filename='profile_pics/'+comment.commenter.image_file) }}">
+                        <!-- <div class="card">
+                            <div class="card-body">{{ comment.comment }}</div>
+                        </div> -->
+                        <div class="d-flex align-items-center"><p class="text-break">{{ comment.comment }}</p></div>
+                    </div>
+                {% endfor %}
+                <form method="POST" action="">
+                    {{ form.hidden_tag() }}
+                    <fildset class="form-group">
+                        <div class="form-group">
+                            {{ form.comment.label(class="form-control-label") }}
+                            {% if form.comment.errors %}
+                                {{ form.comment(class="form-control form-control-lg is-invalid")}}
+                                <div class="invalid-feedback">
+                                    {% for error in form.comment.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.comment(class="form-control form-control-lg") }}
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.submit(class="btn btn-outline-info" )}}
+                        </div>
+                    </fildset>
+                </form>
+            </div>
+        </div>
+    </article>
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel">Delete review?</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <form action="{{ url_for('posts.delete_review', review_id=review.id) }}" method="POST">
+                <input class="btn btn-danger" type="submit" value="Delete">
+            </form>
+            </div>
+        </div>
+        </div>
+    </div>
+{% endblock content %}

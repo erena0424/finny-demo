@@ -1,0 +1,268 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="article-section">
+    <article class="content-section">
+        <img class="rounded-circle account-img d-sm-none" src="{{ url_for('static', filename='profile_pics/'+post.author.image_file) }}">
+        <div class="d-flex flex-row">
+            <img class="rounded-circle account-img d-none d-sm-block" src="{{ url_for('static', filename='profile_pics/'+post.author.image_file) }}">
+            <div class="">
+                <div class="">
+                    <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
+                    <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+                    {% if post.author == current_user %}
+                        <div>
+                            <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('posts.update_post', post_id=post.id) }}">Update</a>
+                            <button type="button" class="btn btn-danger btn-sm m-1" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                Delete
+                            </button>
+                        </div>
+                    {% endif %}
+                    <hr style="border-top: 2px #000 solid;" class="col-sm"></hr>  
+                </div>
+                    <h2 class="article-title d-flex justify-content-start">{{ post.title }}</h2>
+                    <p class="article-content">{{ post.content }}</p>
+                    <div class="d-flex">
+                        {% for category in post.categories %}
+                            <p class="article-category me-3">#{{ category.name }}</p>
+                        {% endfor %}
+                    </div>
+                    
+                    {% set count = 0 %}
+                            {% if post.image_file %}
+                                {% set count = count + 1 %}
+                                <img class="article-img" src="{{ url_for('static', filename='post_pics/'+post.image_file) }}">
+                            {% endif %}
+                            {%for a_pic in additional_pictures%}
+                                {% if count < 3 %}
+                                    <img class="article-img" src="{{ url_for('static', filename='post_pics/'+post.a_pic) }}">
+                                    {% set count = count + 1 %}
+                                {% endif %}
+                            {% endfor %}
+                            {% for category in post.categories %}
+                                
+                                {% if category.name == "言語交換" %}
+                                    {% set category_str = "language" %}
+                                {% elif category.name == "記録・共有" %}
+                                    {% set category_str = "share" %}
+                                {% elif category.name == "指導・質問対応" %}
+                                    {% set category_str = "teach" %}
+                                {% elif category.name == "資格・専門" %}
+                                    {% set category_str = "test" %}
+                                {% endif %}
+                                {% if category_str %}
+                                    {% for i in range(3) %}
+                                        {% if count < 3 %}
+                                            <img class="article-img" src="{{ url_for('static', filename='app_pics/post/' + category_str + '-' + i|string + '.png') }}">
+                                            {% set count = count + 1 %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                    {% if post.website %}
+                        <p class="article-content"><a  href = "{{post.website }}">webサイトをチェック！</a></p>
+                    {% endif %}
+                    {% if post.app_store %}
+                        <a class="article-content" href="{{ post.app_store }}"><img class="app-link" src="{{ url_for('static', filename='app_pics/app_store.svg') }}" ></a>
+                    {% endif %}
+                    {% if post.google_play %}
+                        <a  class="article-content" href = "{{post.google_play }}"><img class="app-link" src="{{ url_for('static', filename='app_pics/google_play.png') }}" ></a>
+                    {% endif %}
+                    <hr style="border-top: 2px #000 solid;" class="col-sm"></hr>
+                    <h2 class="article-title d-flex justify-content-start">このサービスの評価</h2>
+                    <div class="d-flex flex-wrap align-items-center">
+                        <div style="font-size: 1.5rem;"class="article-title d-flex align-items-center">総合</div>
+                        {% if post.ave_rating %}
+                            <div class="d-flex align-items-center mx-3">
+                                
+                                <div class="d-flex align-items-center mx-3">
+                                    <div id="rating-container-{{ post.id }}" aveRating="{{ post.ave_rating }}"></div>
+                                </div>
+                                
+
+                                <script>
+                                    function displayStars(postId, aveRating) {
+                                        var roundedRating = Math.round(parseFloat(aveRating));
+
+                                        var ratingContainer = document.getElementById('rating-container-' + postId);
+                                        for (var i = 0; i < roundedRating; i++) {
+                                            ratingContainer.innerHTML += '<i class="fa fa-star rating-color"></i>';
+                                        }
+                                        for (var i = 0; i < 5 - roundedRating; i++) {
+                                            ratingContainer.innerHTML += '<i class="fa fa-star"></i>';
+                                        }
+                                    }
+
+                                    // Call the function for the current post
+                                    displayStars("{{ post.id }}", "{{ post.ave_rating }}");
+                                </script>
+                            </div>
+                            <div style="color: #F8DF83; font-size: 30px; font-family: BIZ UDPGothic; font-weight: 400;"  class="d-flex align-items-center"> {{ post.ave_rating }}</div>
+                        {% else %}
+                        <div class="d-flex align-items-center mx-3">
+                                    
+                                {% for i in range(2) %}
+                                    <i class="fa fa-star rating-color"></i>
+                                    <i class="fa fa-star"></i>
+                                {% endfor %}
+                                <i class="fa fa-star rating-color"></i>
+                        </div>
+                        {% endif %}
+                        <div class="d-flex flex-row mx-3">
+                            {% if current_user.is_authenticated %}
+                                {% if post in current_user.liked_posts %}
+                                    <a href="#" id="like-link" data-post-id="{{ post.id }}" class="liked">
+                                        <i class="fa-solid fa-heart" style="color:#00000099"></i>
+                                    </a>
+                                {% else %}
+                                    <a href="#" id="like-link" data-post-id="{{ post.id }}" class="not-liked">
+                                        <i class="fa-regular fa-heart" style="color:#00000099"></i>
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                <a href="{{ url_for('users.login') }}"><i class="fa-regular fa-heart" style="color:#00000099"></i></a>
+                            {% endif %}
+                            <div style="font-size: 1rem;font-weight: 400;" class="mx-1">いいね！</div>
+                        </div>
+                        <div class="d-flex flex-row mx-2">
+                            <img src="{{ url_for('static', filename='app_pics/chat.png') }}">
+                            <div style="font-size: 1rem;font-weight: 400;" class="mx-1">コメント</div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        {% for review in reviews.items%}
+                            <article class="media content-section d-flex flex-sm-row flex-column">
+                                <img class="rounded-circle account-img" src="{{ url_for('static', filename='profile_pics/'+review.reviewer.image_file) }}">
+                                <div class="media-body">
+                                    <a href="{{ url_for('users.user_reviews', username=review.reviewer.username) }}">{{ review.reviewer.username }}</a>
+                                    <small>{{ review.date_reviewed.strftime('%Y-%m-%d') }}</small>
+                                    {% if review.reviewer == current_user %}
+                                        <div>
+                                            <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('posts.update_review', review_id=review.id) }}">編集</a>
+                                            <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('posts.delete_review', review_id=review.id) }}">削除</a>
+                                        </div>
+                                    {% endif %}
+                                    <h2><a class="article-title" href="{{ url_for('posts.review', review_id=review.id) }}">{{ review.title }}</a></h2>
+                                    <p class="article-content">{{ review.content }}</p>
+                                    {% for i in range(review.rating) %}
+                                        <i class="fa fa-star rating-color"></i>
+                                    {% endfor %}
+                                    {% for in in range(5-review.rating) %}
+                                        <i class="fa fa-star"></i>
+                                    {% endfor %}
+                                </div>
+                            </article>
+                        {% endfor %} 
+                    </div>
+                    {% if (post.author != current_user and not (current_user.id in reviews|map(attribute='user_id')|list)) or role["is_admin"](current_user) %}
+    
+                        <div class="mt-2">
+                            <form method="POST" action="">
+                                {{ form.hidden_tag() }}
+                                <fildset class="form-group">
+                                    <legend class="border-bottom mb-4"><h2 class="article-title d-flex justify-content-start">{{ legend }}</h2></legend>
+                                    <div class="form-group">
+                                        {{ form.title.label(class="form-control-label") }}
+                                        {% if form.title.errors %}
+                                            {{ form.title(class="form-control form-control-lg is-invalid")}}
+                                            <div class="invalid-feedback">
+                                                {% for error in form.title.errors %}
+                                                    <span>{{ error }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        {% else %}
+                                            {{ form.title(class="form-control form-control-lg") }}
+                                        {% endif %}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ form.content.label(class="form-control-label") }}
+                                        {% if form.content.errors %}
+                                            {{ form.content(class="form-control form-control-lg is-invalid")}}
+                                            <div class="invalid-feedback">
+                                                {% for error in form.content.errors %}
+                                                    <span>{{ error }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        {% else %}
+                                            {{ form.content(class="form-control form-control-lg") }}
+                                        {% endif %}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control-label">満足度</label>
+                                        <div class="d-flex flex-row">
+                                            <ul class="rate-area">
+                                                <input type="radio" id="5-star" name="rating" value="5" /><label for="5-star" title="Amazing">5 stars</label>
+                                                <input type="radio" id="4-star" name="rating" value="4" /><label for="4-star" title="Good">4 stars</label>
+                                                <input type="radio" id="3-star" name="rating" value="3" /><label for="3-star" title="Average">3 stars</label>
+                                                <input type="radio" id="2-star" name="rating" value="2" /><label for="2-star" title="Not Good">2 stars</label>
+                                                <input type="radio" id="1-star" name="rating" value="1" /><label for="1-star" title="Bad">1 star</label>
+                                            </ul> 
+                                        </div>                                   
+                                    </div>
+                                    {% if current_user.is_authenticated and role["is_general"](current_user) %}
+                                        <div class="form-group">
+                                            {{ form.is_in_timeline(class="form-control-label")}}タイムラインにも投稿する
+                                        </div>
+                                    {% endif %}
+                                </fildset>
+                                {% if current_user.is_authenticated %}
+                                    <div class="form-group text-center">
+                                        <div class="mx-auto" style="max-width: 600px;">
+                                            {{ form.submit(class="btn btn-create btn btn-primary btn-block" )}}
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <a class="btn btn-outline-info" href="{{ url_for('users.login') }}">投稿</a>
+                                {% endif %}
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            </div> 
+        </div>
+        
+    </article>
+</div>
+<!-- Modal
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel">本当に削除しますか?</h5>
+            <p>投稿を削除すると、ユーザーレビュー等も消えてしまい復元出来ません。</p>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <form action="{{ url_for('posts.delete_post', post_id=post.id) }}" method="POST">
+            <input class="btn btn-danger" type="submit" value="Delete">
+        </form>
+        </div>
+    </div>
+    </div>
+</div> -->
+
+
+  
+  <!-- Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel">本当に削除しますか?</h5>
+            <p>投稿を削除すると、ユーザーレビュー等も消えてしまい復元出来ません。</p>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <form action="{{ url_for('posts.delete_post', post_id=post.id) }}" method="POST">
+                <input class="btn btn-danger" type="submit" value="Delete">
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}

@@ -1,0 +1,266 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="d-flex flex-column mb-3 align-items-center justify-content-center">
+    {% if not (categories or key_words ) %}
+        <div class="flex mb-5">
+            <!-- <div class="d-flex flex-lg-row flex-md-row flex-sm-column flex-column">
+                <div class="d-flex align-items-center align-self-center flex-column">
+                    <div class="home-title-sub-2">自分に合ったマッチングをしよう</div>
+                    <div class="text-nowrap home-title-sub-1">マッチングサービスの総合情報サイト</div>
+                    <div class="home-title-main"> Finny</div>
+                </div>
+                <div class="">
+                    <img src="{{ url_for('static', filename='app_pics/home.png') }}" class="img-fluid" alt="Responsive image">
+                </div>
+            </div> -->
+            <img src="{{ url_for('static', filename='app_pics/home_new.png') }}" style="width:60rem;" class="img-fluid" alt="Responsive image">
+        </div>
+    {% endif %}
+    <div class="p-2">
+        <div class="flex mb-5">
+            {% if categories %}
+                <h2>{% for category in categories %}#{{ category }} {% endfor %}</h2>
+            {% endif %}
+            {% if key_words %}
+                <h2> {{ key_words }} の検索結果</h2>
+            {% endif %}
+            {% if posts.items %}
+            <div class="article-section p-4">
+            {% for post in posts.items%}
+                <article class="content-section">
+                    <div class="d-flex">
+                    <img class="rounded-circle account-img d-sm-none" src="{{ url_for('static', filename='profile_pics/'+post.author.image_file) }}">
+                    <div class="flex-fill d-flex flex-row">
+                        <img class="rounded-circle account-img d-none d-sm-block" src="{{ url_for('static', filename='profile_pics/'+post.author.image_file) }}">
+                        <div class="flex-fill d-flex flex-column">
+                            <div class="p-1">
+                                <a class="mr-2" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
+                                <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+                            </div>
+                            <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
+                            <div class="d-flex flex-row">
+                                {% if post.ave_rating %}
+                                    <div class="d-flex align-items-center mx-3">
+                                        <div id="rating-container-{{ post.id }}" aveRating="{{ post.ave_rating }}"></div>
+                                    </div>
+                                    
+
+                                    <script>
+                                        function displayStars(postId, aveRating) {
+                                            var roundedRating = Math.round(parseFloat(aveRating));
+
+                                            var ratingContainer = document.getElementById('rating-container-' + postId);
+                                            for (var i = 0; i < roundedRating; i++) {
+                                                ratingContainer.innerHTML += '<i class="fa fa-star rating-color"></i>';
+                                            }
+                                            for (var i = 0; i < 5 - roundedRating; i++) {
+                                                ratingContainer.innerHTML += '<i class="fa fa-star"></i>';
+                                            }
+                                        }
+
+                                        // Call the function for the current post
+                                        displayStars("{{ post.id }}", "{{ post.ave_rating }}");
+                                    </script>
+                                    <div style="color: #F8DF83;"  class="d-flex align-items-center article-title"> {{ post.ave_rating }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="d-flex">
+                                {% for category in post.categories %}
+                                    <p class="article-category me-3">#{{ category.name }}</p>
+                                {% endfor %}
+                            </div>
+                            {% if post.image_file %}
+                                <img class="article-img" src="{{ url_for('static', filename='post_pics/'+post.image_file) }}">
+                            {% endif %}
+                            {% for image in post.additional_images %}
+                                <img class="article-img" src="{{ url_for('static', filename='post_pics/'+image.image_file) }}">
+                            {% endfor %}
+                            <p class="article-content">{{ post.content }}</p>
+                            <a style="color:#4173F6 !important;" class="d-flex justify-content-end text-muted" href="{{ url_for('posts.post', post_id=post.id) }}">＞＞投稿の全文を見る</a>
+                            <div class="d-flex flex-row justify-content-end align-items-end">
+                                <div class="d-flex align-items-end mx-1">
+                                    {% if current_user.is_authenticated %}
+                                        {% if post in current_user.liked_posts %}
+                                            <a href="#" id="like-link" data-post-id="{{ post.id }}" class="liked">
+                                                <i class="fa-solid fa-heart" style="color:#00000099"></i>
+                                            </a>
+                                        {% else %}
+                                            <a href="#" id="like-link" data-post-id="{{ post.id }}" class="not-liked">
+                                                <i class="fa-regular fa-heart" style="color:#00000099"></i>
+                                            </a>
+                                        {% endif %}
+                                    {% else %}
+                                        <a href="{{ url_for('users.login') }}"><i class="fa-regular fa-heart" style="color:#00000099"></i></a>
+                                    {% endif %}
+                                    <div>いいね！</div>
+                                    <div>コメント</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    
+                    <!--<div class="container">
+                        <div class="d-none d-md-block">
+                            <div class="d-flex flex-column">
+                                <div class="d-flex flex-row">
+                                    <a class="d-flex justify-content-start mr-2 no-underline-link" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
+                                </div>
+                                <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d %H:%M') }}</small>
+                            </div>
+                            <hr class="hr hr-blurry" />
+                            <div class="d-flex flex-lg-row flex-md-column flex-sm-column flex-column">
+                                <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
+                                <div class="d-flex flex-row">
+                                    {% if post.ave_rating %}
+                                        <div class="d-flex align-items-center mx-3">
+                                            
+                                                {% for i in range(4) %}
+                                                    <i class="fa fa-star rating-color"></i>
+                                                {% endfor %}
+                                                {% for in in range(1) %}
+                                                    <i class="fa fa-star"></i>
+                                                {% endfor %}
+                                        </div>
+                                        <div style="color: #F8DF83; font-size: 30px; font-family: BIZ UDPGothic; font-weight: 400;"  class="d-flex align-items-center"> {{ post.ave_rating }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                {% for category in post.categories %}
+                                    <p class="article-category">#{{ category.name }}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% if post.image_file %}
+                        <img class="article-img" src="{{ url_for('static', filename='post_pics/'+post.image_file) }}">
+                        {% endif %}
+                        {%for a_pic in additional_pictures%}
+                            <img class="article-img" src="{{ url_for('static', filename='post_pics/'+post.a_pic) }}">
+                        {% endfor %}
+                        <p class="article-content">{{ post.content }}</p>
+                        <a style="color:#4173F6 !important;" class="d-flex justify-content-end text-muted" href="{{ url_for('posts.post', post_id=post.id) }}">＞＞投稿の全文を見る</a>
+                        <div class="d-flex flex-row justify-content-end align-items-end">
+                            <div class="d-flex align-items-end mx-1">
+                                {% if current_user.is_authenticated %}
+                                    {% if post in current_user.liked_posts %}
+                                        <a href="#" id="like-link" data-post-id="{{ post.id }}" class="liked">
+                                            <i class="fa-solid fa-heart" style="color:#00000099"></i>
+                                        </a>
+                                    {% else %}
+                                        <a href="#" id="like-link" data-post-id="{{ post.id }}" class="not-liked">
+                                            <i class="fa-regular fa-heart" style="color:#00000099"></i>
+                                        </a>
+                                    {% endif %}
+                                {% else %}
+                                    <a href="{{ url_for('users.login') }}"><i class="fa-regular fa-heart" style="color:#00000099"></i></a>
+                                {% endif %}
+                                <div>いいね！</div>
+                                <div>コメント</div>
+                            </div>
+                        </div>
+                    </div>-->
+                    </div>
+                </article>
+            {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        <!-- </div>
+    </div>  -->
+    
+    {% if current_user.is_authenticated and current_user.role==general %}
+        <h1>あなたへのおすすめ</h1>
+            <div class="article-section p-4">
+                {% for post in recommended_posts%}
+                <article class="content-section d-flex flex-lg-row flex-md-column flex-sm-column flex-column">
+                    <img class="rounded-circle account-img" src="{{url_for('static',filename='profile_pics/' + post.author.image_file)}}">
+                    <div class="container">
+                        <div class="d-flex flex-column">
+                            <div class="d-flex flex-row">
+                                <a class="d-flex justify-content-start mr-2 no-underline-link" href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
+                            </div>
+                            <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d %H:%M') }}</small>
+                        </div>
+                        <hr class="hr hr-blurry" />
+                        <div class="d-flex flex-lg-row flex-md-column flex-sm-column flex-column">
+                            <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a></h2>
+                            <div class="d-flex flex-row">
+                                {% if post.ave_rating %}
+                                    <div class="d-flex align-items-center mx-3">
+                                        
+                                            {% for i in range(4) %}
+                                                <i class="fa fa-star rating-color"></i>
+                                            {% endfor %}
+                                            {% for in in range(1) %}
+                                                <i class="fa fa-star"></i>
+                                            {% endfor %}
+                                    </div>
+                                    <div style="color: #F8DF83; font-size: 30px; font-family: BIZ UDPGothic; font-weight: 400;"  class="d-flex align-items-center"> {{ post.ave_rating }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="d-flex flex-wrap">
+                            {% for category in post.categories %}
+                                <p class="article-category">#{{ category.name }}</p>
+                            {% endfor %}
+                        </div>
+                        {% if post.image_file %}
+                            <img class="article-img" src="{{ url_for('static', filename='post_pics/'+post.image_file) }}">
+                        {% endif %}
+                        {%for a_pic in additional_pictures%}
+                            <img class="article-img" src="{{ url_for('static', filename='post_pics/'+post.a_pic) }}">
+                        {% endfor %}
+                        <p class="article-content">{{ post.content }}</p>
+                        <a style="color:#4173F6 !important;" class="d-flex justify-content-end text-muted" href="{{ url_for('posts.post', post_id=post.id) }}">＞＞投稿の全文を見る</a>
+                        <div class="d-flex flex-row justify-content-end align-items-end">
+                            <div class="d-flex align-items-end mx-1">
+                                {% if current_user.is_authenticated %}
+                                    {% if post in current_user.liked_posts %}
+                                        <a href="#" id="like-link" data-post-id="{{ post.id }}" class="liked">
+                                            <i class="fa-solid fa-heart" style="color:#00000099"></i>
+                                        </a>
+                                    {% else %}
+                                        <a href="#" id="like-link" data-post-id="{{ post.id }}" class="not-liked">
+                                            <i class="fa-regular fa-heart" style="color:#00000099"></i>
+                                        </a>
+                                    {% endif %}
+                                {% else %}
+                                    <a href="{{ url_for('users.login') }}"><i class="fa-regular fa-heart" style="color:#00000099"></i></a>
+                                {% endif %}
+                                <div>いいね！</div>
+                                <div>コメント</div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+        
+    {% endif %}
+
+        {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}  
+        {% if page_num %}
+            {% if posts.page == page_num %}
+                <a class="btn btn-info" href="{{ url_for('main.home', page=page_num )}}">{{ page_num }}</a>
+            {% else %}
+                <a class="btn btn-outline-info" href="{{ url_for('main.home', page=page_num )}}">{{ page_num }}</a>
+            {% endif %}
+        {% else %}  
+            ...
+        {% endif %}
+    {% endfor %} 
+    <a href="https://storyset.com/work">Work illustrations by Storyset</a>
+    </div>
+</div>
+{% endblock content %}
+
+<script>
+document.getElementById('like-link').addEventListener('click', function(event) {
+    event.preventDefault(); // Prevent the default behavior of the anchor tag
+    
+    // Call the function specified in the href attribute
+    window.location.href = this.getAttribute('href');
+});
+</script>

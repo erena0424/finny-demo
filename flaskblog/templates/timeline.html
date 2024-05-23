@@ -1,0 +1,124 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <!-- <form method="POST" action="{{url_for('main.timeline')}}">
+                {{ form.hidden_tag() }}
+                <div class="row">
+                    <div class="col-md-8 mb-2">
+                        <input style="border: 1px solid #ACACAC;" class="form-control mr-sm-4" type="search" placeholder="投稿を検索" aria-label="Search" name="key_words">
+                    </div>
+                    <!-- <div class="form-group">
+                        {{ form.categories.label(class="form-control-label") }}
+                        {% if form.categories.errors %}
+                            {{ form.categories(class="form-control form-control-sm is-invalid", rows=3, multiple=True)}}
+                            <div class="invalid-feedback">
+                                {% for error in form.categories.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.categories(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <button style="background: #7FC4C1; border-radius: 7px" class="btn btn-outline-secondary btn-block text-white" type="submit">検索</button>
+                    </div>
+                </div>
+                <button class="btn btn-outline-secondary" id="clear-button">クリア</button>
+                <script>
+                    document.getElementById('clear-button').addEventListener('click', function() {
+                        // Clear the search input field
+                        document.querySelector('input[name="key_words"]').value = '';
+                        
+                        // Reset the selected option in the categories dropdown
+                        var categoriesSelect = document.querySelector('select[name="categories"]');
+                        categoriesSelect.selectedIndex = -1;
+                    });
+                </script>
+            </form> --> 
+            {% if key_words %}
+                <h2>{{ key_words }} の検索結果 </h2>
+            {% endif %}
+            {% if categories %}
+                <h2>{% for category in categories %}#{{ category }} {% endfor %}</h2>
+            {% endif %}
+            {% for review in reviews.items%}
+                <article class="media content-section">
+                    <img class="rounded-circle account-img" src="{{ url_for('static', filename='profile_pics/'+review.reviewer.image_file) }}">
+                    <div class="media-body">
+                    <div class="d-flex flex-column">
+                        <div class="d-flex flex-row">
+                            <a style="font-family: BIZ UDPGothic; font-size: 1.25rem;" class="d-flex justify-content-start mr-2" href="{{ url_for('users.user_reviews', username=review.reviewer.username) }}">{{ review.reviewer.username }}</a>
+                        </div>
+                        <small class="text-muted">{{ review.date_reviewed.strftime('%Y-%m-%d %H:%M') }}</small>
+                        {% if review.reviewer == current_user %}
+                            <div>
+                                <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('posts.update_review', review_id=review.id) }}">編集</a>
+                                <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('posts.delete_review', review_id=review.id) }}">削除</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <hr class="hr hr-blurry" />
+                        <div class="d-flex flex-row">
+                            <h2><a class="article-title text-break" href="{{ url_for('posts.review', review_id=review.id) }}">{{ review.title }}</a></h2>
+                            {% if review.rating %}
+                                <div class="d-flex align-items-center mx-3">
+                                        {% for i in range(review.rating) %}
+                                            <i class="fa fa-star rating-color"></i>
+                                        {% endfor %}
+                                        {% for in in range(5-review.rating) %}
+                                            <i class="fa fa-star"></i>
+                                        {% endfor %}
+                                </div>
+                                <div style="color: #F8DF83; font-size: 30px; font-family: BIZ UDPGothic; font-weight: 400;"  class="d-flex align-items-center"> {{ review.rating }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <p class="article-content text-break">{{ review.content }}</p>
+                        <div class="d-flex">
+                            {% for category in review.categories %}
+                                <p class="article-category">#{{ category.name }}</p>
+                            {% endfor %}
+                        </div>
+                    </hr>
+                    {% if review.post_id %}
+                        <a style="font-family: BIZ UDPGothic; font-size: 0.9375rem; color: #4173F6; text-decoration-line: underline;" class="article-title" href="{{ url_for('posts.post', post_id=review.post_id) }}">元の投稿を見る</a>
+                    {% endif %}
+                </article>
+            {% endfor %}
+        </div>
+        <!-- <div class="row align-items-start mx-2">
+            <div style="border: 1px #ABABAB soli" class="card">
+                <div class="card-body">
+                    <h3 style="color: black; font-size: 24px; font-family: BIZ UDPGothic;">カテゴリ別に探す</h3>
+                        <p style=" color: rgba(0, 0, 0, 0.60); font-size: 12px; font-family: BIZ UDPGothic">「カテゴリ別」のページに遷移します</p>
+                        <ul class="list-group">
+                            <a style="color: black; font-size: 24px; font-family: BIZ UDPGothic; font-weight: 400" class="card-text" href="{{ url_for('main.timeline', category='趣味') }}">趣味</a>
+                            <a style="color: black; font-size: 24px; font-family: BIZ UDPGothic; font-weight: 400" class="card-text" href="{{ url_for('main.timeline', category='恋愛') }}">恋愛</a>
+                            <a style="color: black; font-size: 24px; font-family: BIZ UDPGothic; font-weight: 400" class="card-text" href="{{ url_for('main.timeline', category='生活') }}">生活</a>
+                            <a style="color: black; font-size: 24px; font-family: BIZ UDPGothic; font-weight: 400" class="card-text" href="{{ url_for('main.timeline', category='勉強') }}">勉強</a>
+                            <a style="color: black; font-size: 24px; font-family: BIZ UDPGothic; font-weight: 400" class="card-text" href="{{ url_for('main.timeline', category='ビジネス') }}">ビジネス</a>
+                            
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </div> -->
+    </div>
+</div>
+ 
+    {% for page_num in reviews.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}  
+        {% if page_num %}
+            {% if reviews.page == page_num %}
+                <a class="btn btn-info" href="{{ url_for('main.timeline', page=page_num )}}">{{ page_num }}</a>
+            {% else %}
+                <a class="btn btn-outline-info" href="{{ url_for('main.timeline', page=page_num )}}">{{ page_num }}</a>
+            {% endif %}
+        {% else %}  
+            ...
+        {% endif %}
+    {% endfor %} 
+    
+{% endblock content %}
