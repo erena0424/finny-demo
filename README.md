@@ -6,6 +6,9 @@ An online service that helps people in Japan find services related to their stud
 
 demonstration video:
 
+https://github.com/erena0424/finny-demo/assets/124848190/b987652c-dc5a-4423-9738-316eafb71447
+
+
 ## Installation
 To compile it from source:
 
