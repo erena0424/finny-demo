@@ -8,6 +8,9 @@ demonstration video:
 
 https://github.com/erena0424/finny-demo/assets/124848190/b987652c-dc5a-4423-9738-316eafb71447
 
+website:
+
+https://finny-web-d9ab8b848e4c.herokuapp.com/
 
 ## Installation
 To compile it from source:
